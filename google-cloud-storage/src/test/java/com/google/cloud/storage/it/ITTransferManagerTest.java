@@ -27,6 +27,7 @@ import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.Storage.BlobSourceOption;
 import com.google.cloud.storage.Storage.BlobWriteOption;
 import com.google.cloud.storage.StorageException;
+import com.google.cloud.storage.StorageOptions;
 import com.google.cloud.storage.TestUtils;
 import com.google.cloud.storage.TmpFile;
 import com.google.cloud.storage.TransportCompatibility.Transport;
@@ -48,14 +49,17 @@ import com.google.cloud.storage.transfermanager.UploadResult;
 import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.SeekableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import org.junit.Before;
 import org.junit.Rule;
@@ -378,8 +382,10 @@ public class ITTransferManagerTest {
         TmpFile tmpFile = DataGenerator.base64Characters().tempFile(baseDir, largeFileSize);
         TmpFile tmpfile2 = DataGenerator.base64Characters().tempFile(baseDir, largeFileSize);
         TmpFile tmpFile3 = DataGenerator.base64Characters().tempFile(baseDir, smallFileSize)) {
+      List<Storage.BlobWriteOption> writeOptsPerRequest = new ArrayList<>();
+      writeOptsPerRequest.add(Storage.BlobWriteOption.disableGzipContent());
       ParallelUploadConfig parallelUploadConfig =
-          ParallelUploadConfig.newBuilder().setBucketName(bucket.getName()).build();
+          ParallelUploadConfig.newBuilder().setBucketName(bucket.getName()).setWriteOptsPerRequest(writeOptsPerRequest).build();
       List<Path> files =
           ImmutableList.of(tmpFile.getPath(), tmpfile2.getPath(), tmpFile3.getPath());
       UploadJob job = transferManager.uploadFiles(files, parallelUploadConfig);
@@ -499,6 +505,34 @@ public class ITTransferManagerTest {
                 .filter(res -> res.getStatus() == TransferStatus.SUCCESS)
                 .collect(Collectors.toList()));
       }
+    }
+  }
+
+  @Test
+  public void testpcu() throws Exception{
+    String PREFIX = "prefix";
+
+    /** Will create a large local file at this path. */
+    String TMP_PATH = "/tmp/";
+
+    TmpFile tmpFile = DataGenerator.base64Characters().tempFile(Paths.get(TMP_PATH), 4L * 1024L * 1024L * 1024L - 1);
+    StorageOptions options = StorageOptions.newBuilder().build();
+    TransferManagerConfig tmc = TransferManagerConfig.newBuilder()
+        .setAllowParallelCompositeUpload(true).build();
+    try (TransferManager tm = tmc.getService()) {
+      List<Path> files = new ArrayList<>();
+      files.add(tmpFile.getPath());
+      List<Storage.BlobWriteOption> writeOptsPerRequest = new ArrayList<>();
+      writeOptsPerRequest.add(Storage.BlobWriteOption.disableGzipContent());
+      System.out.println(
+          tm.uploadFiles(
+                  files,
+                  ParallelUploadConfig.newBuilder()
+                      .setBucketName(bucket.getName())
+                      .setPrefix(PREFIX)
+                      .setWriteOptsPerRequest(writeOptsPerRequest)
+                      .build())
+              .getUploadResults());
     }
   }
 
