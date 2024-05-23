@@ -15,9 +15,9 @@
  */
 
 package com.example.storage.managedfolders;
+
 // [START storage_control_managed_folder_delete]
 
-import com.google.storage.control.v2.ManagedFolder;
 import com.google.storage.control.v2.StorageControlClient;
 
 class DeleteManagedFolder {

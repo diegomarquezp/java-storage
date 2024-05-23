@@ -15,6 +15,7 @@
  */
 
 package com.example.storage.managedfolders;
+
 // [START storage_control_managed_folder_get]
 
 import com.google.storage.control.v2.ManagedFolder;

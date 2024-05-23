@@ -15,6 +15,7 @@
  */
 
 package com.example.storage.managedfolders;
+
 // [START storage_control_managed_folder_create]
 
 import com.google.storage.control.v2.ManagedFolder;
@@ -27,7 +28,8 @@ class CreateManagedFolder {
     // Instantiates a client in a try-with-resource to automatically cleanup underlying resources
     try (StorageControlClient storageControlClient = StorageControlClient.create()) {
       ManagedFolder managedFolder = ManagedFolder.newBuilder().setName(managedFolderName).build();
-      ManagedFolder response = storageControlClient.createManagedFolder(bucketName, managedFolder, managedFolderId);
+      ManagedFolder response = storageControlClient
+          .createManagedFolder(bucketName, managedFolder, managedFolderId);
       System.out.printf("Created Managed Folder %s", response.getName());
     }
   }
