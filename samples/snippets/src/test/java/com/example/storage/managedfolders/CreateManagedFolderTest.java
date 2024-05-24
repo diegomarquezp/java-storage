@@ -26,10 +26,9 @@ public class CreateManagedFolderTest extends TestBase {
 
   @Test
   public void testCreateManagedFolder() throws Exception {
-    String managedFolderName = "new-managed-folder";
     String managedFolderId = "new-managed-folder-" + UUID.randomUUID();
-    CreateManagedFolder.managedFolderCreate(bucketName, managedFolderName, managedFolderId);
-    assertThat(stdOut.getCapturedOutputAsUtf8String()).contains(managedFolderName);
+    CreateManagedFolder.managedFolderCreate(bucketName, managedFolderId);
+    assertThat(stdOut.getCapturedOutputAsUtf8String()).contains(managedFolderId);
   }
 }
 

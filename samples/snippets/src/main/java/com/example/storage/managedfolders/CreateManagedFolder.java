@@ -22,12 +22,11 @@ import com.google.storage.control.v2.ManagedFolder;
 import com.google.storage.control.v2.StorageControlClient;
 
 class CreateManagedFolder {
-  public static void managedFolderCreate(String bucketName,
-      String managedFolderName, String managedFolderId) throws Exception {
+  public static void managedFolderCreate(String bucketName, String managedFolderId) throws Exception {
 
     // Instantiates a client in a try-with-resource to automatically cleanup underlying resources
     try (StorageControlClient storageControlClient = StorageControlClient.create()) {
-      ManagedFolder managedFolder = ManagedFolder.newBuilder().setName(managedFolderName).build();
+      ManagedFolder managedFolder = ManagedFolder.newBuilder().build();
       ManagedFolder response = storageControlClient
           .createManagedFolder(bucketName, managedFolder, managedFolderId);
       System.out.printf("Created Managed Folder %s", response.getName());
