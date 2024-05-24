@@ -27,8 +27,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class CreateManagedFolderTest extends TestBase {
-  @Before
-  public void setup() {
+
+  @Test
+  public void testCreateManagedFolder() throws Exception {
     Bucket bucket = storage.get(bucketName);
 
     BucketInfo.IamConfiguration iamConfiguration =
@@ -42,10 +43,6 @@ public class CreateManagedFolderTest extends TestBase {
             .setDefaultAcl(null)
             .build(),
         BucketTargetOption.metagenerationMatch());
-  }
-
-  @Test
-  public void testCreateManagedFolder() throws Exception {
     String managedFolderId = "new-managed-folder-" + UUID.randomUUID();
     CreateManagedFolder.managedFolderCreate(bucketName, managedFolderId);
     assertThat(stdOut.getCapturedOutputAsUtf8String()).contains(managedFolderId);
