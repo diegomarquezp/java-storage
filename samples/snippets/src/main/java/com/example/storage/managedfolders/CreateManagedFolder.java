@@ -18,6 +18,7 @@ package com.example.storage.managedfolders;
 
 // [START storage_control_managed_folder_create]
 
+import com.google.storage.control.v2.BucketName;
 import com.google.storage.control.v2.ManagedFolder;
 import com.google.storage.control.v2.StorageControlClient;
 
@@ -29,7 +30,7 @@ class CreateManagedFolder {
     try (StorageControlClient storageControlClient = StorageControlClient.create()) {
       ManagedFolder managedFolder = ManagedFolder.newBuilder().build();
       ManagedFolder response = storageControlClient
-          .createManagedFolder(bucketName, managedFolder, managedFolderId);
+          .createManagedFolder(BucketName.of("_", bucketName), managedFolder, managedFolderId);
       System.out.printf("Created Managed Folder %s", response.getName());
     }
   }
