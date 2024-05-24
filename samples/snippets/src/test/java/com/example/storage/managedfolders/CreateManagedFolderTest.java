@@ -19,10 +19,30 @@ package com.example.storage.managedfolders;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.example.storage.TestBase;
+import com.google.cloud.storage.Bucket;
+import com.google.cloud.storage.BucketInfo;
+import com.google.cloud.storage.Storage.BucketTargetOption;
 import java.util.UUID;
+import org.junit.Before;
 import org.junit.Test;
 
 public class CreateManagedFolderTest extends TestBase {
+  @Before
+  public void setup() {
+    Bucket bucket = storage.get(bucketName);
+
+    BucketInfo.IamConfiguration iamConfiguration =
+        BucketInfo.IamConfiguration.newBuilder().setIsUniformBucketLevelAccessEnabled(true).build();
+
+    storage.update(
+        bucket
+            .toBuilder()
+            .setIamConfiguration(iamConfiguration)
+            .setAcl(null)
+            .setDefaultAcl(null)
+            .build(),
+        BucketTargetOption.metagenerationMatch());
+  }
 
   @Test
   public void testCreateManagedFolder() throws Exception {
