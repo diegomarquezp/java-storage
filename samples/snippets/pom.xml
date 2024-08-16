@@ -31,7 +31,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>26.43.0</version>
+        <version>26.44.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -76,8 +76,10 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-pubsub</artifactId>
-      <version>1.131.0</version>
+      <version>1.132.0</version>
       <scope>test</scope>
     </dependency>
+  <!-- [START storage_install_with_bom] -->
   </dependencies>
+  <!-- [END storage_install_with_bom] -->
 </project>
